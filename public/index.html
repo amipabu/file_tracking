@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Procurement File Tracking System for contracting officers - track files, monitor SLA deadlines, and manage procurement workflows.">
+    <title>Procurement File Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-brand">
+                <div class="brand-icon login-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <h1 class="login-title">FileTracker</h1>
+                <p class="login-subtitle">Procurement File Tracking System</p>
+            </div>
+            <form id="formLogin" class="login-form">
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" class="text-input" required placeholder="Enter username"
+                        autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="text-input" required placeholder="Enter password"
+                        autocomplete="current-password">
+                </div>
+                <div class="login-error" id="loginError" style="display:none;"></div>
+                <button type="submit" class="btn btn-primary login-btn" id="loginBtn">Sign In</button>
+            </form>
+            <p class="login-hint">Default: admin / admin123</p>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+            </div>
+            <span class="brand-text">FileTracker</span>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" data-page="dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </li>
+            <li class="nav-item" data-page="files">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+                <span>Files</span>
+            </li>
+            <li class="nav-item" data-page="officers">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Officers</span>
+            </li>
+            <li class="nav-item" data-page="notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span>Notifications</span>
+                <span class="nav-badge" id="navNotifBadge" style="display:none;">0</span>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="btn-check-sla" id="btnCheckSLA" title="Manually trigger SLA check">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>Check SLAs Now</span>
+            </button>
+            <div class="sidebar-user" id="sidebarUser">
+                <div class="sidebar-user-avatar" id="sidebarAvatar">TL</div>
+                <div class="sidebar-user-info">
+                    <span class="sidebar-user-name" id="sidebarUserName">Team Leader</span>
+                    <span class="sidebar-user-role">Administrator</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="btn-hamburger" id="btnHamburger">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <h1 class="page-title" id="pageTitle">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn-notification" id="btnHeaderNotif">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notif-badge" id="headerNotifBadge" style="display:none;">0</span>
+                </button>
+                <div class="user-menu" id="userMenu">
+                    <button class="user-menu-trigger" id="btnUserMenu">
+                        <div class="user-avatar-sm" id="headerAvatar">TL</div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-dropdown-header">
+                            <span class="user-dropdown-name" id="dropdownName">Team Leader</span>
+                            <span class="user-dropdown-role">Administrator</span>
+                        </div>
+                        <div class="user-dropdown-sep"></div>
+                        <button class="user-dropdown-item" id="btnChangePassword">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            Change Password
+                        </button>
+                        <button class="user-dropdown-item user-dropdown-logout" id="btnLogout">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Page -->
+        <section class="page active" id="pageDashboard">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card stat-total">
+                    <div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statTotal">0</span>
+                        <span class="stat-label">Total Files</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-active">
+                    <div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statActive">0</span>
+                        <span class="stat-label">Active Files</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-overdue">
+                    <div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statOverdue">0</span>
+                        <span class="stat-label">Overdue</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-completed">
+                    <div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="statCompleted">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Officer Workload</h2>
+                        <span class="card-header-sub">Active files per contracting officer</span>
+                    </div>
+                    <div class="card-body" id="officerChart"></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Process Distribution</h2>
+                        <span class="card-header-sub">Files by procurement type</span>
+                    </div>
+                    <div class="card-body" id="processChart"></div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Upcoming Deadlines</h2>
+                        <span class="card-header-sub">Next SLA milestones</span>
+                    </div>
+                    <div class="card-body" id="upcomingDeadlines"></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Recent Activity</h2>
+                        <span class="card-header-sub">Latest procurement files</span>
+                    </div>
+                    <div class="card-body" id="recentFiles"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Files Page -->
+        <section class="page" id="pageFiles">
+            <div class="page-actions">
+                <div class="filter-bar">
+                    <select id="filterOfficer" class="select-input">
+                        <option value="">All Officers</option>
+                    </select>
+                    <select id="filterProcess" class="select-input">
+                        <option value="">All Processes</option>
+                    </select>
+                    <select id="filterStatus" class="select-input">
+                        <option value="">All Statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="btnNewFile">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New File
+                </button>
+            </div>
+            <div class="files-table-wrap">
+                <table class="data-table" id="filesTable">
+                    <thead>
+                        <tr>
+                            <th>PR Number</th>
+                            <th>Title</th>
+                            <th>Process</th>
+                            <th>Officer</th>
+                            <th>Date Assigned</th>
+                            <th>Current Step</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="filesBody"></tbody>
+                </table>
+                <div class="empty-state" id="filesEmpty" style="display:none;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    <p>No files found. Create your first procurement file.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Officers Page -->
+        <section class="page" id="pageOfficers">
+            <div class="page-actions">
+                <div></div>
+                <button class="btn btn-primary" id="btnNewOfficer">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New Officer
+                </button>
+            </div>
+            <div class="officers-grid" id="officersGrid"></div>
+            <div class="empty-state" id="officersEmpty" style="display:none;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                </svg>
+                <p>No officers yet. Add your first contracting officer.</p>
+            </div>
+        </section>
+
+        <!-- Notifications Page -->
+        <section class="page" id="pageNotifications">
+            <div class="page-actions">
+                <div></div>
+                <button class="btn btn-secondary" id="btnReadAll">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 11 12 14 22 4"></polyline>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    Mark All Read
+                </button>
+            </div>
+            <div class="notifications-list" id="notificationsList"></div>
+            <div class="empty-state" id="notifsEmpty" style="display:none;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <p>No notifications. All files are on track!</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay">
+        <!-- New File Modal -->
+        <div class="modal" id="modalNewFile" style="display:none;">
+            <div class="modal-header">
+                <h2>Create New Procurement File</h2>
+                <button class="btn-close" data-close>&times;</button>
+            </div>
+            <form id="formNewFile" class="modal-body">
+                <div class="form-group">
+                    <label for="inputPR">Purchase Requisition Number</label>
+                    <input type="text" id="inputPR" class="text-input" required placeholder="e.g. PR-2026-001">
+                </div>
+                <div class="form-group">
+                    <label for="inputTitle">File Title</label>
+                    <input type="text" id="inputTitle" class="text-input" required
+                        placeholder="e.g. Office Supplies Q1">
+                </div>
+                <div class="form-group">
+                    <label for="inputProcess">Procurement Process</label>
+                    <select id="inputProcess" class="select-input" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="inputOfficer">Assign to Officer</label>
+                    <select id="inputOfficer" class="select-input" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="inputAssignedDate">Assignment Date <span class="form-hint">(leave blank for
+                            today)</span></label>
+                    <input type="date" id="inputAssignedDate" class="text-input">
+                </div>
+                <div class="form-group">
+                    <label for="inputCurrentStep">Current Step <span class="form-hint">(for past files already in
+                            progress)</span></label>
+                    <select id="inputCurrentStep" class="select-input">
+                        <option value="">Step 1 (start from beginning)</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create File</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- New Officer Modal -->
+        <div class="modal" id="modalNewOfficer" style="display:none;">
+            <div class="modal-header">
+                <h2>Add Contracting Officer</h2>
+                <button class="btn-close" data-close>&times;</button>
+            </div>
+            <form id="formNewOfficer" class="modal-body">
+                <div class="form-group">
+                    <label for="inputOfficerName">Full Name</label>
+                    <input type="text" id="inputOfficerName" class="text-input" required placeholder="e.g. Jane Smith">
+                </div>
+                <div class="form-group">
+                    <label for="inputOfficerEmail">Email Address</label>
+                    <input type="email" id="inputOfficerEmail" class="text-input" required
+                        placeholder="e.g. jane@example.com">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Officer</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- File Detail Modal -->
+        <div class="modal modal-wide" id="modalFileDetail" style="display:none;">
+            <div class="modal-header">
+                <h2 id="detailTitle">File Detail</h2>
+                <button class="btn-close" data-close>&times;</button>
+            </div>
+            <div class="modal-body" id="detailBody"></div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div class="modal" id="modalChangePassword" style="display:none;">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <button class="btn-close" data-close>&times;</button>
+            </div>
+            <form id="formChangePassword" class="modal-body">
+                <div class="form-group">
+                    <label for="inputCurrentPassword">Current Password</label>
+                    <input type="password" id="inputCurrentPassword" class="text-input" required
+                        placeholder="Enter current password">
+                </div>
+                <div class="form-group">
+                    <label for="inputNewPassword">New Password</label>
+                    <input type="password" id="inputNewPassword" class="text-input" required
+                        placeholder="Min 6 characters" minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="inputConfirmPassword">Confirm New Password</label>
+                    <input type="password" id="inputConfirmPassword" class="text-input" required
+                        placeholder="Re-enter new password">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Transfer Files Modal (separate overlay) -->
+    <div class="modal-overlay" id="transferOverlay">
+        <div class="modal" id="modalTransferFiles" style="display:block;">
+            <div class="modal-header">
+                <h2>Transfer Active Files</h2>
+                <button class="btn-close" id="btnCloseTransfer">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="transfer-info" id="transferInfo"></div>
+                <div class="transfer-file-list" id="transferFileList"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCancelTransfer">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmTransfer">Transfer Files</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/js/app.js"></script>
+</body>
+
+</html>
